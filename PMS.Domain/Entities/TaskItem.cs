@@ -67,5 +67,15 @@ public class TaskItem : BaseEntity
 
         _comments.Add(comment);
     }
+    public void UpdateDetails(string title, string description, DateTime dueDate)
+    {
+        SetTitle(title);
+        SetDescription(description);
+
+        if (dueDate < DateTime.UtcNow)
+            throw new ArgumentException("Due date cannot be in the past");
+
+        DueDate = dueDate;
+    }
 
 }
