@@ -1,3 +1,5 @@
+namespace PMS.Domain.Entities;
+
 public class TaskItem : BaseEntity
 {
     public string Title { get; private set; }

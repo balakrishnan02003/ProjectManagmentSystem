@@ -1,3 +1,5 @@
+namespace PMS.Domain.Entities;
+
 public class Project : BaseEntity
 {
     public string Name { get; private set; }

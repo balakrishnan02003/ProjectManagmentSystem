@@ -1,4 +1,4 @@
-
+namespace PMS.Domain.Entities;
 // User -> ProjectMember -> Project
 public class ProjectMember
 {
@@ -33,5 +33,4 @@ public class ProjectMember
 
         Role = role;
     }
-}
 }
