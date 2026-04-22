@@ -1,5 +1,3 @@
-using PMS.Infrastructure.Data;
-
 namespace ProjectManagementSystem
 {
     public class Program
@@ -22,9 +20,18 @@ namespace ProjectManagementSystem
                 app.MapOpenApi();
             }
 
+            // DbContext 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Services
+            builder.Services.AddScoped<IProjectService, ProjectService>();
+            builder.Services.AddScoped<ITaskService, TaskService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
+
 
             app.UseHttpsRedirection();
 
