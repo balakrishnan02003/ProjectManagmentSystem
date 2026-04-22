@@ -1,3 +1,4 @@
+using PMS.Infrastructure.Data;
 
 namespace ProjectManagementSystem
 {
@@ -20,6 +21,10 @@ namespace ProjectManagementSystem
             {
                 app.MapOpenApi();
             }
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
 
             app.UseHttpsRedirection();
 
