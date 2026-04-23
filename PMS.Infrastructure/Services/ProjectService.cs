@@ -74,4 +74,16 @@ public class ProjectService : IProjectService
         _context.Projects.Remove(project);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdateProjectAsync(Guid id, UpdateProjectDto dto)
+    {
+        var project = await _context.Projects.FindAsync(id);
+
+        if (project == null)
+            throw new Exception("Project not found");
+
+        project.SetName(dto.Name);
+
+        await _context.SaveChangesAsync();
+    }
 }

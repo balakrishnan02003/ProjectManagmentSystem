@@ -11,4 +11,6 @@ public interface IProjectService
     Task<ProjectDto?> GetProjectByIdAsync(Guid id);
 
     Task DeleteProjectAsync(Guid id);
+
+    Task UpdateProjectAsync(Guid id, UpdateProjectDto dto);
 }
