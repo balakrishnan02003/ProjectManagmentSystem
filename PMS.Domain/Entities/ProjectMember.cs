@@ -1,5 +1,7 @@
+using PMS.Domain.Enums;
+
 namespace PMS.Domain.Entities;
-// User -> ProjectMember -> Project
+//TODO:User -> ProjectMember -> Project
 public class ProjectMember
 {
     public Guid UserId { get; private set; }
@@ -8,9 +10,9 @@ public class ProjectMember
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; }
 
-    public string Role { get; private set; } // Admin / Member
+    public ProjectRole Role { get; private set; }
 
-    public ProjectMember(Guid userId, Guid projectId, string role)
+    public ProjectMember(Guid userId, Guid projectId, ProjectRole role)
     {
         if (userId == Guid.Empty)
             throw new ArgumentException("UserId is required");
@@ -18,19 +20,13 @@ public class ProjectMember
         if (projectId == Guid.Empty)
             throw new ArgumentException("ProjectId is required");
 
-        if (string.IsNullOrWhiteSpace(role))
-            throw new ArgumentException("Role is required");
-
         UserId = userId;
         ProjectId = projectId;
         Role = role;
     }
 
-    public void ChangeRole(string role)
+    public void ChangeRole(ProjectRole role)
     {
-        if (string.IsNullOrWhiteSpace(role))
-            throw new ArgumentException("Role cannot be empty");
-
         Role = role;
     }
 }

@@ -51,6 +51,17 @@ public class AppDbContext : DbContext
             .HasForeignKey(t => t.AssignedUserId)
             .OnDelete(DeleteBehavior.Restrict); // prevents cascade issues. 
                                                 // If a user is deleted, we don't want to delete all their assigned tasks
+
+      modelBuilder.Entity<TaskItem>()
+            .Property(t => t.Status)
+            .HasConversion<string>();
+
+      modelBuilder.Entity<ProjectMember>()
+            .Property(pm => pm.Role)
+            .HasConversion<string>(); // By default, EF Core will store enums as integers in the database. This is fine, but it can make the data less readable when you look at it directly in the database.
+                                      // By using HasConversion<string>(), we tell EF Core to store the enum values as their string representations instead of integers.
+                                      // This way, if you look at the database, you'll see "Admin" or "Member" instead of 0 or 1.
+
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.TaskItem)
             .WithMany(t => t.Comments)

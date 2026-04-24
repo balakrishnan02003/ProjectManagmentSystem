@@ -46,4 +46,28 @@ public class TaskController : ControllerBase
         await _taskService.DeleteTaskAsync(id);
         return NoContent();
     }
+
+    //Start Task
+    [HttpPost("{id}/start")]
+    public async Task<IActionResult> StartTask(Guid id)
+    {
+        await _taskService.StartTaskAsync(id);
+        return NoContent();
+    }
+
+    //Complete Task
+    [HttpPost("{id}/complete")]
+    public async Task<IActionResult> CompleteTask(Guid id)
+    {
+        await _taskService.CompleteTaskAsync(id);
+        return NoContent();
+    }
+
+    //Reopen Task
+    [HttpPost("{id}/reopen")]
+    public async Task<IActionResult> ReopenTask(Guid id)
+    {
+        await _taskService.ReopenTaskAsync(id);
+        return NoContent();
+    }
 }

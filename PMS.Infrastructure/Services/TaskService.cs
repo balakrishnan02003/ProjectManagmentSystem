@@ -23,12 +23,7 @@ public class TaskService : ITaskService
         if (!projectExists)
             throw new Exception("Project not found");
 
-        var task = new TaskItem(
-            dto.Title,
-            dto.Description,
-            dto.ProjectId,
-            dto.DueDate
-        );
+        var task = new TaskItem(dto.Title, dto.Description, dto.ProjectId, dto.DueDate);
 
         if (dto.AssignedUserId.HasValue)
         {
@@ -80,9 +75,7 @@ public class TaskService : ITaskService
     public async Task<List<TaskDto>> GetTasksByProjectIdAsync(Guid projectId)
     {
         return await _context.TaskItems
-            .Where(t => t.ProjectId == projectId)
-            .Include(t => t.AssignedUser)
-            .Include(t => t.Comments)
+            .Where(t => t.ProjectId == projectId).Include(t => t.AssignedUser).Include(t => t.Comments)
             .Select(t => new TaskDto
             {
                 Id = t.Id,
@@ -103,6 +96,42 @@ public class TaskService : ITaskService
         if (task == null) return;
 
         _context.TaskItems.Remove(task);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task StartTaskAsync(Guid id)
+    {
+        var task = await _context.TaskItems.FindAsync(id);
+
+        if (task == null)
+            throw new Exception("Task not found");
+
+        task.Start(); // domain logic enforces rules
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task CompleteTaskAsync(Guid id)
+    {
+        var task = await _context.TaskItems.FindAsync(id);
+
+        if (task == null)
+            throw new Exception("Task not found");
+
+        task.Complete(); // domain logic enforces rules
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task ReopenTaskAsync(Guid id)
+    {
+        var task = await _context.TaskItems.FindAsync(id);
+
+        if (task == null)
+            throw new Exception("Task not found");
+
+        task.Reopen(); // domain logic enforces rules
+
         await _context.SaveChangesAsync();
     }
 }
