@@ -1,3 +1,5 @@
+using PMS.Domain.Enums;
+using TaskStatus = PMS.Domain.Enums.TaskStatus;
 namespace PMS.Application.DTOs.Tasks;
 
 public class TaskDto
@@ -13,6 +15,8 @@ public class TaskDto
     public string? AssignedUserName { get; set; }
 
     public DateTime DueDate { get; set; }
+
+    public TaskStatus Status { get; set; }
 
     public int CommentCount { get; set; }
 }

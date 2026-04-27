@@ -10,7 +10,7 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<User> Users { get; set; } // Create a table called Users for the User entity
+    public DbSet<User> Users { get; set; } // Represent a table called Users for the User entity
     public DbSet<Project> Projects { get; set; }
     public DbSet<TaskItem> TaskItems { get; set; }
     public DbSet<Comment> Comments { get; set; }
@@ -27,11 +27,19 @@ public class AppDbContext : DbContext
 
         // Relationships
 
+        // Each Project Member has one User 
+        // One user can have many Project Members
+        // One to Many relationship between User and ProjectMember
         modelBuilder.Entity<ProjectMember>()
             .HasOne(pm => pm.User)
             .WithMany(u => u.ProjectMembers)
             .HasForeignKey(pm => pm.UserId);
 
+
+        // Each Project Member has one Project
+        // One Project can have many Project Members
+        // One to Many relationship between Project and ProjectMember 
+        // and many to many relationship between User and Project through ProjectMember
         modelBuilder.Entity<ProjectMember>()
             .HasOne(pm => pm.Project)
             .WithMany(p => p.Members)
@@ -45,17 +53,35 @@ public class AppDbContext : DbContext
             .HasForeignKey(t => t.ProjectId)
             .OnDelete(DeleteBehavior.Cascade); // If a Project is deleted, we want to delete all its TaskItems as well.
 
+        // TaskItem can be assigned to one User
+        // A User can have many assigned TaskItems.
         modelBuilder.Entity<TaskItem>()
             .HasOne(t => t.AssignedUser)
             .WithMany(u => u.AssignedTasks)
             .HasForeignKey(t => t.AssignedUserId)
             .OnDelete(DeleteBehavior.Restrict); // prevents cascade issues. 
                                                 // If a user is deleted, we don't want to delete all their assigned tasks
+
+        // Comment belongs to one TaskItem
+        // A TaskItem can have many Comments
+        // One to Many relationship between Comment and TaskItem
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.TaskItem)
             .WithMany(t => t.Comments)
             .HasForeignKey(c => c.TaskItemId)
             .OnDelete(DeleteBehavior.Cascade); // If a TaskItem is deleted, we want to delete all its comments as well.
+
+        // By default, EF Core will store enums as integers in the database. This is fine, but it can make the data less readable when you look at it directly in the database.
+        // By using HasConversion<string>(), we tell EF Core to store the enum values as their string representations instead of integers.
+        // This way, if you look at the database, you'll see "Admin" or "Member" instead of 0 or 1.
+        modelBuilder.Entity<TaskItem>()
+            .Property(t => t.Status)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<ProjectMember>()
+              .Property(pm => pm.Role)
+              .HasConversion<string>();
+
 
 
         // We have already defined relationships in classes, but EF sometimes needs explict instructions when:

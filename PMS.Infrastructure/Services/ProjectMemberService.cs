@@ -22,7 +22,7 @@ public class ProjectMemberService : IProjectMemberService
         if (user == null)
             throw new Exception("User not found");
 
-        // Load project with members (IMPORTANT for domain logic)
+        // Load project with members
         var project = await _context.Projects
             .Include(p => p.Members)
             .FirstOrDefaultAsync(p => p.Id == dto.ProjectId);
@@ -33,7 +33,7 @@ public class ProjectMemberService : IProjectMemberService
         // Create using constructor
         var member = new ProjectMember(dto.UserId, dto.ProjectId, dto.Role);
 
-        // Use domain method (prevents duplicates)
+        // Use domain method
         project.AddMember(member);
 
         await _context.SaveChangesAsync();

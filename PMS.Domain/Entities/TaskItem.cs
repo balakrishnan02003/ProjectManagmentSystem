@@ -1,9 +1,12 @@
+using PMS.Domain.Enums;
+using TaskStatus = PMS.Domain.Enums.TaskStatus; // So, to remove the ambiguity between TaskStatus and System.Threading.Tasks.TaskStatus, we need to specify that we're using the TaskStatus from our domain enums.
 namespace PMS.Domain.Entities;
 
 public class TaskItem : BaseEntity
 {
     public string Title { get; private set; }
     public string Description { get; private set; }
+    public TaskStatus Status { get; private set; }
 
     // This jus means that this task belongs to a project.
     // We store the ProjectId for database purposes, which is a foreign key to the Projects table.
@@ -36,6 +39,8 @@ public class TaskItem : BaseEntity
 
         ProjectId = projectId;
         DueDate = dueDate;
+
+        Status = TaskStatus.Todo; // Default status when a task is created
     }
 
     public void SetTitle(string title)
@@ -76,6 +81,31 @@ public class TaskItem : BaseEntity
             throw new ArgumentException("Due date cannot be in the past");
 
         DueDate = dueDate;
+    }
+
+    public void Start()
+    {
+        if (Status != TaskStatus.Todo)
+            throw new Exception("Task can only be started from Todo state");
+
+        Status = TaskStatus.InProgress;
+    }
+
+    public void Complete()
+    {
+        if (Status != TaskStatus.InProgress)
+            throw new Exception("Only tasks in progress can be completed");
+
+        Status = TaskStatus.Completed;
+    }
+
+    public void Reopen()
+    {
+
+        if (Status != TaskStatus.Completed)
+            throw new Exception("Only completed tasks can be reopened");
+
+        Status = TaskStatus.Todo;
     }
 
 }

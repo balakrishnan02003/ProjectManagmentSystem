@@ -15,7 +15,6 @@ public class ProjectMemberController : ControllerBase
         _projectMemberService = projectMemberService;
     }
 
-    // Add member to project
     [HttpPost]
     public async Task<IActionResult> AddMember(AddProjectMemberDto dto)
     {
@@ -23,7 +22,6 @@ public class ProjectMemberController : ControllerBase
         return Ok();
     }
 
-    // Get members of a project
     [HttpGet("project/{projectId}")]
     public async Task<IActionResult> GetMembersByProject(Guid projectId)
     {
@@ -31,7 +29,6 @@ public class ProjectMemberController : ControllerBase
         return Ok(result);
     }
 
-    // Remove member from project
     [HttpDelete]
     public async Task<IActionResult> RemoveMember(Guid userId, Guid projectId)
     {

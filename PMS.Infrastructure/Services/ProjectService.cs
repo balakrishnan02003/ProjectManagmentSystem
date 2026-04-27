@@ -3,6 +3,7 @@ using PMS.Application.DTOs.Projects;
 using PMS.Application.Interfaces;
 using PMS.Domain.Entities;
 using PMS.Infrastructure.Data;
+using PMS.Application.Common;
 
 namespace PMS.Infrastructure.Services;
 
@@ -17,7 +18,7 @@ public class ProjectService : IProjectService
 
     public async Task<ProjectDto> CreateProjectAsync(CreateProjectDto dto)
     {
-        // Use constructor (IMPORTANT)
+       
         var project = new Project(dto.Name);
 
         _context.Projects.Add(project);
@@ -80,7 +81,7 @@ public class ProjectService : IProjectService
         var project = await _context.Projects.FindAsync(id);
 
         if (project == null)
-            throw new Exception("Project not found");
+            throw new Exception($"Project {Constants.NotFound}");
 
         project.SetName(dto.Name);
 

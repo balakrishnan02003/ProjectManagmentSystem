@@ -15,7 +15,6 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    // Create User
     [HttpPost]
     public async Task<IActionResult> CreateUser(CreateUserDto dto)
     {
@@ -23,7 +22,6 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    // Get All Users
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -31,7 +29,6 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    // Get User by Id
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(Guid id)
     {
@@ -43,7 +40,6 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    // Delete User
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(Guid id)
     {

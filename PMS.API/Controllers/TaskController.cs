@@ -15,7 +15,6 @@ public class TaskController : ControllerBase
         _taskService = taskService;
     }
 
-    //Create Task
     [HttpPost]
     public async Task<IActionResult> CreateTask(CreateTaskDto dto)
     {
@@ -23,7 +22,6 @@ public class TaskController : ControllerBase
         return Ok(result);
     }
 
-    //Get Tasks by Project
     [HttpGet("project/{projectId}")]
     public async Task<IActionResult> GetTasksByProjectId(Guid projectId)
     {
@@ -31,7 +29,6 @@ public class TaskController : ControllerBase
         return Ok(result);
     }
 
-    //Update Task
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTask(Guid id, UpdateTaskDto dto)
     {
@@ -39,11 +36,31 @@ public class TaskController : ControllerBase
         return NoContent();
     }
 
-    //Delete Task
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTask(Guid id)
     {
         await _taskService.DeleteTaskAsync(id);
+        return NoContent();
+    }
+
+    [HttpPost("{id}/start")]
+    public async Task<IActionResult> StartTask(Guid id)
+    {
+        await _taskService.StartTaskAsync(id);
+        return NoContent();
+    }
+
+    [HttpPost("{id}/complete")]
+    public async Task<IActionResult> CompleteTask(Guid id)
+    {
+        await _taskService.CompleteTaskAsync(id);
+        return NoContent();
+    }
+
+    [HttpPost("{id}/reopen")]
+    public async Task<IActionResult> ReopenTask(Guid id)
+    {
+        await _taskService.ReopenTaskAsync(id);
         return NoContent();
     }
 }

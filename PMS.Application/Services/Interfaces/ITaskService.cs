@@ -11,4 +11,10 @@ public interface ITaskService
     Task UpdateTaskAsync(Guid id, UpdateTaskDto dto);
 
     Task DeleteTaskAsync(Guid id);
+
+    Task StartTaskAsync(Guid id);
+
+    Task CompleteTaskAsync(Guid id);
+
+    Task ReopenTaskAsync(Guid id);
 }

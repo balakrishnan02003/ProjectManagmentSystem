@@ -15,7 +15,6 @@ public class CommentController : ControllerBase
         _commentService = commentService;
     }
 
-    // Create Comment
     [HttpPost]
     public async Task<IActionResult> CreateComment(CreateCommentDto dto)
     {
@@ -23,7 +22,6 @@ public class CommentController : ControllerBase
         return Ok(result);
     }
 
-    // Get Comments by Task
     [HttpGet("task/{taskId}")]
     public async Task<IActionResult> GetCommentsByTaskId(Guid taskId)
     {
@@ -31,7 +29,6 @@ public class CommentController : ControllerBase
         return Ok(result);
     }
 
-    // Delete Comment
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteComment(Guid id)
     {

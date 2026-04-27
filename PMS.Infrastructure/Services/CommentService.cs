@@ -17,7 +17,7 @@ public class CommentService : ICommentService
 
     public async Task<CommentDto> CreateCommentAsync(CreateCommentDto dto)
     {
-        // Ensure task exists
+        // Check if task exists
         var task = await _context.TaskItems
             .FindAsync(dto.TaskItemId);
 
@@ -26,9 +26,6 @@ public class CommentService : ICommentService
 
         // Create using constructor (IMPORTANT)
         var comment = new Comment(dto.Content, dto.TaskItemId);
-
-        // Optional: attach via domain (if you want richer domain behavior)
-        task.AddComment(comment);
 
         _context.Comments.Add(comment);
         await _context.SaveChangesAsync();
@@ -44,7 +41,7 @@ public class CommentService : ICommentService
     public async Task<List<CommentDto>> GetCommentsByTaskIdAsync(Guid taskId)
     {
         return await _context.Comments
-            .Where(c => c.TaskItemId == taskId)
+            .Where(c => c.TaskItemId == taskId) // get the comment by task item id matches
             .Select(c => new CommentDto
             {
                 Id = c.Id,

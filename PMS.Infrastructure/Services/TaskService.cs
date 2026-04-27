@@ -3,6 +3,7 @@ using PMS.Application.DTOs.Tasks;
 using PMS.Application.Interfaces;
 using PMS.Domain.Entities;
 using PMS.Infrastructure.Data;
+using PMS.Application.Common;
 
 namespace PMS.Infrastructure.Services;
 
@@ -21,14 +22,9 @@ public class TaskService : ITaskService
             .AnyAsync(p => p.Id == dto.ProjectId);
 
         if (!projectExists)
-            throw new Exception("Project not found");
+            throw new Exception($"Project {Constants.NotFound}");
 
-        var task = new TaskItem(
-            dto.Title,
-            dto.Description,
-            dto.ProjectId,
-            dto.DueDate
-        );
+        var task = new TaskItem(dto.Title, dto.Description, dto.ProjectId, dto.DueDate);
 
         if (dto.AssignedUserId.HasValue)
         {
@@ -36,7 +32,7 @@ public class TaskService : ITaskService
                 .FindAsync(dto.AssignedUserId.Value);
 
             if (user == null)
-                throw new Exception("Assigned user not found");
+                throw new Exception($"Assigned user {Constants.NotFound}");
 
             task.AssignUser(user);
         }
@@ -61,7 +57,7 @@ public class TaskService : ITaskService
         var task = await _context.TaskItems.FindAsync(id);
 
         if (task == null)
-            throw new Exception("Task not found");
+            throw new Exception($"Task {Constants.NotFound}");
 
         task.UpdateDetails(dto.Title, dto.Description, dto.DueDate);
 
@@ -70,7 +66,7 @@ public class TaskService : ITaskService
             var user = await _context.Users.FindAsync(dto.AssignedUserId.Value);
 
             if (user == null)
-                throw new Exception("User not found");
+                throw new Exception($"User {Constants.NotFound}");
 
             task.AssignUser(user);
         }
@@ -81,8 +77,6 @@ public class TaskService : ITaskService
     {
         return await _context.TaskItems
             .Where(t => t.ProjectId == projectId)
-            .Include(t => t.AssignedUser)
-            .Include(t => t.Comments)
             .Select(t => new TaskDto
             {
                 Id = t.Id,
@@ -103,6 +97,42 @@ public class TaskService : ITaskService
         if (task == null) return;
 
         _context.TaskItems.Remove(task);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task StartTaskAsync(Guid id)
+    {
+        var task = await _context.TaskItems.FindAsync(id);
+
+        if (task == null)
+            throw new Exception($"Task {Constants.NotFound}");
+
+        task.Start(); 
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task CompleteTaskAsync(Guid id)
+    {
+        var task = await _context.TaskItems.FindAsync(id);
+
+        if (task == null)
+            throw new Exception($"Task {Constants.NotFound}");
+
+        task.Complete(); 
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task ReopenTaskAsync(Guid id)
+    {
+        var task = await _context.TaskItems.FindAsync(id);
+
+        if (task == null)
+            throw new Exception($"Task {Constants.NotFound}");
+
+        task.Reopen(); 
+
         await _context.SaveChangesAsync();
     }
 }
