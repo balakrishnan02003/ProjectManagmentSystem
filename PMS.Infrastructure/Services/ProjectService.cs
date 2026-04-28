@@ -50,21 +50,18 @@ public class ProjectService : IProjectService
 
     public async Task<ProjectDto?> GetProjectByIdAsync(Guid id)
     {
-        var project = await _context.Projects
-            .Include(p => p.Members)
-            .Include(p => p.Tasks)
-            .FirstOrDefaultAsync(p => p.Id == id);
-
-        if (project == null) return null;
-
-        return new ProjectDto
+        return await _context.Projects
+        .Where(p => p.Id == id)
+        .Select(p => new ProjectDto
         {
-            Id = project.Id,
-            Name = project.Name,
-            MemberCount = project.Members.Count,
-            TaskCount = project.Tasks.Count
-        };
-    }
+            Id = p.Id,
+            Name = p.Name,
+            MemberCount = p.Members.Count(),
+            TaskCount = p.Tasks.Count()
+        })
+        .AsNoTracking()
+        .FirstOrDefaultAsync();
+        }
 
     public async Task DeleteProjectAsync(Guid id)
     {
@@ -81,7 +78,7 @@ public class ProjectService : IProjectService
         var project = await _context.Projects.FindAsync(id);
 
         if (project == null)
-            throw new Exception($"Project {Constants.NotFound}");
+            throw new KeyNotFoundException($"Project {Constants.NotFound}");
 
         project.SetName(dto.Name);
 

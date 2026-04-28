@@ -22,7 +22,7 @@ public class CommentService : ICommentService
             .FindAsync(dto.TaskItemId);
 
         if (task == null)
-            throw new Exception("Task not found");
+            throw new KeyNotFoundException("Task not found");
 
         // Create using constructor (IMPORTANT)
         var comment = new Comment(dto.Content, dto.TaskItemId);
@@ -40,11 +40,11 @@ public class CommentService : ICommentService
 
     public async Task<List<CommentDto>> GetCommentsByTaskIdAsync(Guid taskId)
     {
-        return await _context.Comments
+        return await _context.Comments.AsNoTracking() // EF track entities by default. AsNoTracking reduce memory usage.
             .Where(c => c.TaskItemId == taskId) // get the comment by task item id matches
             .Select(c => new CommentDto
             {
-                Id = c.Id,
+                Id = c.Id,  
                 Content = c.Content,
                 TaskItemId = c.TaskItemId
             })

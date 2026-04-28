@@ -3,6 +3,7 @@ using PMS.Application.DTOs.ProjectMembers;
 using PMS.Application.Interfaces;
 using PMS.Domain.Entities;
 using PMS.Infrastructure.Data;
+using PMS.Application.Common;
 
 namespace PMS.Infrastructure.Services;
 
@@ -20,7 +21,7 @@ public class ProjectMemberService : IProjectMemberService
         // Validate user
         var user = await _context.Users.FindAsync(dto.UserId);
         if (user == null)
-            throw new Exception("User not found");
+            throw new KeyNotFoundException($"User {Constants.NotFound}");
 
         // Load project with members
         var project = await _context.Projects
@@ -28,7 +29,7 @@ public class ProjectMemberService : IProjectMemberService
             .FirstOrDefaultAsync(p => p.Id == dto.ProjectId);
 
         if (project == null)
-            throw new Exception("Project not found");
+            throw new KeyNotFoundException($"Project {Constants.NotFound}");
 
         // Create using constructor
         var member = new ProjectMember(dto.UserId, dto.ProjectId, dto.Role);
@@ -44,7 +45,8 @@ public class ProjectMemberService : IProjectMemberService
         var member = await _context.ProjectMembers
             .FirstOrDefaultAsync(pm => pm.UserId == userId && pm.ProjectId == projectId);
 
-        if (member == null) return;
+        if (member == null)
+            throw new KeyNotFoundException($"Project member {Constants.NotFound}");
 
         _context.ProjectMembers.Remove(member);
         await _context.SaveChangesAsync();

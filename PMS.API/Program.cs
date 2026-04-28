@@ -2,11 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using PMS.Infrastructure.Data;
 using PMS.Application.Interfaces;
 using PMS.Infrastructure.Services;
-//using PMS.API.Middleware;
+using PMS.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+//Add services to the container
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -17,6 +17,8 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
+
+builder.Services.AddHttpClient<IExternalApiService, ExternalApiService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,10 +32,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseMiddleware<ExceptionMiddleware>();
+// Register global exception handling early so downstream exceptions flow here.
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
-
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

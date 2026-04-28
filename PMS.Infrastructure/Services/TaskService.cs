@@ -57,7 +57,7 @@ public class TaskService : ITaskService
         var task = await _context.TaskItems.FindAsync(id);
 
         if (task == null)
-            throw new Exception($"Task {Constants.NotFound}");
+            throw new KeyNotFoundException($"Task {Constants.NotFound}");
 
         task.UpdateDetails(dto.Title, dto.Description, dto.DueDate);
 
@@ -117,7 +117,7 @@ public class TaskService : ITaskService
         var task = await _context.TaskItems.FindAsync(id);
 
         if (task == null)
-            throw new Exception($"Task {Constants.NotFound}");
+            throw new KeyNotFoundException($"Task {Constants.NotFound}");
 
         task.Complete(); 
 
@@ -129,7 +129,7 @@ public class TaskService : ITaskService
         var task = await _context.TaskItems.FindAsync(id);
 
         if (task == null)
-            throw new Exception($"Task {Constants.NotFound}");
+            throw new KeyNotFoundException($"Task {Constants.NotFound}");
 
         task.Reopen(); 
 
